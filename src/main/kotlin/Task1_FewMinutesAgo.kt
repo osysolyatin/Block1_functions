@@ -23,24 +23,6 @@ fun transferMinutesAndHoursIntoText(agoTime: Int, text: String): String {
     }
 }
 
-fun minutesToText(agoTime: Int): String {
-    val minutes = (agoTime / SECONDS_IN_MINUTE)
-    return when (minutes % 100) {
-        1, 21, 31, 41, 51 -> "$minutes минуту"
-        in 2..4, in 22..24 -> "$minutes минуты"
-        else -> "$minutes минут"
-    }
-}
-
-fun hoursToText(agoTime: Int): String {
-    val hours = (agoTime / SECONDS_IN_HOUR)
-    return when (hours % 100) {
-        1, 21, 31, 41, 51 -> "$hours час"
-        in 2..4, in 22..24 -> "$hours часа"
-        else -> "$hours часов"
-    }
-}
-
 fun agoToText(agoTime: Int): String {
     return when (agoTime) {
         in 0..SECONDS_IN_MINUTE -> "был(а) только что"
