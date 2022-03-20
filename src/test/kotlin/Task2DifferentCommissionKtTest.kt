@@ -19,11 +19,25 @@ class Task2DifferentCommissionKtTest {
     }
 
     @Test
-    fun checkLimits_mastercard_false() {
+    fun checkLimits_mastercard_month_false() {
         // arrange
         val cardType : Cards = Cards.MASTERCARD
         val amountTransferPerMonthTest = convertRubToCoins(601_000)
         val amountTransferCurrentTest = convertRubToCoins(1_000)
+
+        // act
+        val result = checkLimits(amountTransferCurrentTest, amountTransferPerMonthTest,cardType)
+
+        // assert
+        assertEquals(false,result)
+    }
+
+    @Test
+    fun checkLimits_mastercard_current_false() {
+        // arrange
+        val cardType : Cards = Cards.MASTERCARD
+        val amountTransferPerMonthTest = convertRubToCoins(160_000)
+        val amountTransferCurrentTest = convertRubToCoins(151_000)
 
         // act
         val result = checkLimits(amountTransferCurrentTest, amountTransferPerMonthTest,cardType)
@@ -47,11 +61,25 @@ class Task2DifferentCommissionKtTest {
     }
 
     @Test
-    fun checkLimits_vkPay_false() {
+    fun checkLimits_vkPay_current_false() {
+        // arrange
+        val cardType : Cards = Cards.VK_PAY
+        val amountTransferPerMonthTest = convertRubToCoins(20_000)
+        val amountTransferCurrentTest = convertRubToCoins(16_000)
+
+        // act
+        val result = checkLimits(amountTransferCurrentTest, amountTransferPerMonthTest,cardType)
+
+        // assert
+        assertEquals(false,result)
+    }
+
+    @Test
+    fun checkLimits_vkPay_month_false() {
         // arrange
         val cardType : Cards = Cards.VK_PAY
         val amountTransferPerMonthTest = convertRubToCoins(41_000)
-        val amountTransferCurrentTest = convertRubToCoins(16_000)
+        val amountTransferCurrentTest = convertRubToCoins(10_000)
 
         // act
         val result = checkLimits(amountTransferCurrentTest, amountTransferPerMonthTest,cardType)
@@ -91,8 +119,8 @@ class Task2DifferentCommissionKtTest {
     fun calculateCommission_maestro_zero() {
         // arrange
         val cardType : Cards = Cards.MAESTRO
-        val amountTransferPerMonthTest = convertRubToCoins(70_000)
-        val amountTransferCurrentTest = convertRubToCoins(1_000)
+        val amountTransferPerMonthTest = convertRubToCoins(60_000)
+        val amountTransferCurrentTest = convertRubToCoins(10_000)
 
         // act
         val result = calculateCommission (amountTransferPerMonthTest,amountTransferCurrentTest, cardType)

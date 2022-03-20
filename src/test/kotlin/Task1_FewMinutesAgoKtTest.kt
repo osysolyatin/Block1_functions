@@ -33,6 +33,20 @@ class Task1FewMinutesAgoKtTest {
     }
 
     @Test
+    fun convertMinutesAndHoursIntoText_minutes_59() {
+        // arrange
+        val agoTimeTest = 59
+
+        //act
+
+        val result = convertMinutesAndHoursIntoText(agoTimeTest, arrayOf("минуту", "минуты", "минут"))
+
+        // assert
+
+        assertEquals("минут", result)
+    }
+
+    @Test
     fun convertMinutesAndHoursIntoText_minutes_21() {
         // arrange
         val agoTimeTest = 21
