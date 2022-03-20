@@ -15,27 +15,27 @@ class Task2DifferentCommissionKtTest {
         val result = checkLimits(amountTransferCurrentTest, amountTransferPerMonthTest,cardType)
 
         // assert
-        assertEquals(true,true)
+        assertEquals(true, result)
     }
 
     @Test
     fun checkLimits_mastercard_false() {
         // arrange
         val cardType : Cards = Cards.MASTERCARD
-        val amountTransferPerMonthTest = convertRubToCoins(151_000)
+        val amountTransferPerMonthTest = convertRubToCoins(601_000)
         val amountTransferCurrentTest = convertRubToCoins(1_000)
 
         // act
         val result = checkLimits(amountTransferCurrentTest, amountTransferPerMonthTest,cardType)
 
         // assert
-        assertEquals(false,false)
+        assertEquals(false,result)
     }
 
     @Test
     fun checkLimits_vkPay_true() {
         // arrange
-        val cardType : Cards = Cards.MASTERCARD
+        val cardType : Cards = Cards.VK_PAY
         val amountTransferPerMonthTest = convertRubToCoins(30_000)
         val amountTransferCurrentTest = convertRubToCoins(10_000)
 
@@ -43,13 +43,13 @@ class Task2DifferentCommissionKtTest {
         val result = checkLimits(amountTransferCurrentTest, amountTransferPerMonthTest,cardType)
 
         // assert
-        assertEquals(true,true)
+        assertEquals(true,result)
     }
 
     @Test
     fun checkLimits_vkPay_false() {
         // arrange
-        val cardType : Cards = Cards.MASTERCARD
+        val cardType : Cards = Cards.VK_PAY
         val amountTransferPerMonthTest = convertRubToCoins(41_000)
         val amountTransferCurrentTest = convertRubToCoins(16_000)
 
@@ -57,7 +57,7 @@ class Task2DifferentCommissionKtTest {
         val result = checkLimits(amountTransferCurrentTest, amountTransferPerMonthTest,cardType)
 
         // assert
-        assertEquals(false,false)
+        assertEquals(false,result)
     }
 
     @Test
