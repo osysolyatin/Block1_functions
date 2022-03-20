@@ -1,12 +1,15 @@
 import Cards.*
 
-const val CARD_MAX_LIMIT_FOR_TRANSFER_DAY = 150_000
-const val CARD_MAX_LIMIT_FOR_TRANSFER_MONTH = 600_000
-const val VK_PAY_MAX_LIMIT_FOR_TRANSFER_AT_ONCE = 15_000
-const val VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH = 40_000
-const val MIN_COMMISSION = 35
+const val CARD_MAX_LIMIT_FOR_TRANSFER_DAY = 150_000 * 100
+const val CARD_MAX_LIMIT_FOR_TRANSFER_MONTH = 600_000 * 100
+const val CARD_MIN_LIMIT_WITHOUT_COMMISSION = 300 * 100
+const val CARD_MAX_LIMIT_WITHOUT_COMMISSION = 75_000 * 100
+const val VK_PAY_MAX_LIMIT_FOR_TRANSFER_AT_ONCE = 15_000 * 100
+const val VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH = 40_000 * 100
+const val MIN_COMMISSION = 35 * 100
 const val TRANSACTION_COMMISSION_VISA_MIR = 0.0075
 const val TRANSACTION_COMMISSION_MASTERCARD = 0.006
+const val TRANSACTION_COMMISSION_FIX_MASTERCARD = 20 * 100
 
 enum class Cards {
     VISA, MASTERCARD, MAESTRO, VK_PAY, MIR
@@ -14,34 +17,31 @@ enum class Cards {
 
 fun main() {
     var amountTransferPerMonth = 0
-    do {
-        val amountTransferCurrent = inputTransferAmount()
+    val amountTransferCurrent = 0
+    val card = VISA
+
+    while (checkLimits(amountTransferCurrent, amountTransferPerMonth, card)) {
+        val amountTransferCurrent = convertRubToCoins (inputTransferAmount())
         amountTransferPerMonth += amountTransferCurrent
-        if (amountTransferCurrent > CARD_MAX_LIMIT_FOR_TRANSFER_DAY) {
-            println("Превышение дневного лимита")
-            break
-        }
-        if (amountTransferPerMonth > CARD_MAX_LIMIT_FOR_TRANSFER_MONTH) {
-            println("Превышение месячного лимита")
-            break
-        }
-        println("Сумма перевода в текущем месяце: $amountTransferPerMonth")
-        val commission = calculateCommission(
-            MASTERCARD,
-            amountTransferPerMonth = transferRubToCoins(amountTransferPerMonth),
-            amountTransferCurrent = transferRubToCoins(amountTransferCurrent)
-        )
 
-        toPrintInRubAndCoins(transferRubToCoins(amountTransferCurrent), commission)
+        if (checkLimits(amountTransferCurrent, amountTransferPerMonth,card)) {
+            println("Сумма перевода в текущем месяце: ${amountTransferPerMonth / 100} рублей")
+            val commission = calculateCommission(
+                amountTransferPerMonth,
+                amountTransferCurrent,
+                card
+            )
+            printInRubAndCoins(amountTransferCurrent, commission)
+        } else break
+    }
 
-    } while (amountTransferPerMonth < CARD_MAX_LIMIT_FOR_TRANSFER_MONTH || amountTransferPerMonth < VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH)
 }
 
 fun inputTransferAmount(): Int {
     var input = 0
     while (true) {
         try {
-            print("Введите сумму перевода: ")
+            print("Введите сумму перевода в рублях: ")
             input = readLine()?.toInt() ?: return input
             break
         } catch (e: Exception) {
@@ -51,39 +51,57 @@ fun inputTransferAmount(): Int {
     return input
 }
 
-fun transferRubToCoins(amountRUB: Int): Int {
+fun convertRubToCoins(amountRUB: Int): Int {
     return amountRUB * 100
 }
 
-fun toPrintInRubAndCoins(amountTransfer: Int, commission: Int) {
+fun checkLimits (amountTransferCurrent: Int, amountTransferPerMonth: Int, cardType: Cards = MASTERCARD) : Boolean {
+    when (cardType) {
+        MASTERCARD, MAESTRO, VISA, MIR -> {
+            if (amountTransferPerMonth > CARD_MAX_LIMIT_FOR_TRANSFER_MONTH) {
+                println("Превышение месячного лимита")
+                return false
+            } else if (amountTransferCurrent > CARD_MAX_LIMIT_FOR_TRANSFER_DAY) {
+                println("Превышение дневного лимита")
+                return false
+            } else return true
+        }
+        VK_PAY -> {
+            if (amountTransferCurrent > VK_PAY_MAX_LIMIT_FOR_TRANSFER_AT_ONCE) {
+                println("Превышен дневной  лимиит переводов со счета VK Pay")
+                return false
+            } else if (amountTransferPerMonth > VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH) {
+                println("Превышен месячный лимит переводов со счёта VK Pay")
+                return false
+            } else return true
+        }
+    }
+}
+
+fun printInRubAndCoins(amountTransfer: Int, commission: Int) {
     val sumRub = (commission + amountTransfer) / 100
     val sumCoins = (commission + amountTransfer) - (sumRub * 100)
     val commRub = commission / 100
     val commCoins = commission - commRub * 100
-    return println(
+    println(
         "Комиссия за перевод составила: $commRub руб и $commCoins копеек или $commission копеек\n" +
                 "Сумма перевода, включая комиссию составляет: $sumRub рублей и $sumCoins копеек"
     )
 
 }
 
-fun calculateCommission(cardType: Cards = VK_PAY, amountTransferPerMonth: Int = 0, amountTransferCurrent: Int): Int {
+fun calculateCommission(amountTransferPerMonth: Int = 0, amountTransferCurrent: Int, cardType: Cards = VK_PAY): Int {
     return when (cardType) {
         VISA, MIR -> {
             val commission = (amountTransferCurrent * TRANSACTION_COMMISSION_VISA_MIR).toInt()
-            return if (commission < transferRubToCoins(MIN_COMMISSION)) transferRubToCoins(MIN_COMMISSION)
+            return if (commission < MIN_COMMISSION) MIN_COMMISSION
             else commission
         }
         MASTERCARD, MAESTRO -> {
-            if (amountTransferPerMonth <= transferRubToCoins(75_000)) 0
-            else ((amountTransferCurrent * TRANSACTION_COMMISSION_MASTERCARD) + (transferRubToCoins(20))).toInt()
+            if (amountTransferPerMonth in CARD_MIN_LIMIT_WITHOUT_COMMISSION..CARD_MAX_LIMIT_WITHOUT_COMMISSION) 0
+            else ((amountTransferCurrent * TRANSACTION_COMMISSION_MASTERCARD) + TRANSACTION_COMMISSION_FIX_MASTERCARD).toInt()
         }
-        VK_PAY -> if (amountTransferCurrent > transferRubToCoins(VK_PAY_MAX_LIMIT_FOR_TRANSFER_AT_ONCE)) {
-            error("Превышен дневной  лимиит переводов со счета VK Pay")
-
-        } else if (amountTransferPerMonth > transferRubToCoins(VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH)) {
-            error("Превышен месячный лимит переводов со счёта VK Pay")
-        } else 0
+        VK_PAY -> 0
     }
 
 }
