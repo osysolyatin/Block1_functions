@@ -78,11 +78,12 @@ fun calculateCommission(cardType: Cards = VK_PAY, amountTransferPerMonth: Int = 
             if (amountTransferPerMonth <= transferRubToCoins(75_000)) 0
             else ((amountTransferCurrent * TRANSACTION_COMMISSION_MASTERCARD) + (transferRubToCoins(20))).toInt()
         }
-        VK_PAY -> if (amountTransferCurrent > transferRubToCoins(VK_PAY_MAX_LIMIT_FOR_TRANSFER_AT_ONCE))
+        VK_PAY -> if (amountTransferCurrent > transferRubToCoins(VK_PAY_MAX_LIMIT_FOR_TRANSFER_AT_ONCE)) {
             error("Превышен дневной  лимиит переводов со счета VK Pay")
-            else if (amountTransferPerMonth > transferRubToCoins(VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH))
+
+        } else if (amountTransferPerMonth > transferRubToCoins(VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH)) {
             error("Превышен месячный лимит переводов со счёта VK Pay")
-            else 0
+        } else 0
     }
 
 }
