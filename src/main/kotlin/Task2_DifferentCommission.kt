@@ -48,32 +48,32 @@ fun inputTransferAmount(): Int {
             println("Неверное число, попробуйте еще раз")
         }
     }
-    return input.toInt()
+    return input
 }
 
 fun convertRubToCoins(amountRUB: Int): Int {
     return amountRUB * 100
 }
 
-fun checkLimits (amountTransferCurrent: Int, amountTransferPerMonth: Int, cardType: Cards = MASTERCARD) : Boolean {
+fun checkLimits (amountTransferCurrentCheck: Int, amountTransferPerMonthCheck: Int, cardType: Cards = MASTERCARD) : Boolean {
     when (cardType) {
         MASTERCARD, MAESTRO, VISA, MIR -> {
-            if (amountTransferPerMonth > CARD_MAX_LIMIT_FOR_TRANSFER_MONTH) {
+            return if (amountTransferPerMonthCheck > CARD_MAX_LIMIT_FOR_TRANSFER_MONTH) {
                 println("Превышение месячного лимита")
-                return false
-            } else if (amountTransferCurrent > CARD_MAX_LIMIT_FOR_TRANSFER_DAY) {
+                false
+            } else if (amountTransferCurrentCheck > CARD_MAX_LIMIT_FOR_TRANSFER_DAY) {
                 println("Превышение дневного лимита")
-                return false
-            } else return true
+                false
+            } else true
         }
         VK_PAY -> {
-            if (amountTransferCurrent > VK_PAY_MAX_LIMIT_FOR_TRANSFER_AT_ONCE) {
+            return if (amountTransferCurrentCheck > VK_PAY_MAX_LIMIT_FOR_TRANSFER_AT_ONCE) {
                 println("Превышен дневной  лимиит переводов со счета VK Pay")
-                return false
-            } else if (amountTransferPerMonth > VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH) {
+                false
+            } else if (amountTransferPerMonthCheck > VK_PAY_MAX_LIMIT_FOR_TRANSFER_MONTH) {
                 println("Превышен месячный лимит переводов со счёта VK Pay")
-                return false
-            } else return true
+                false
+            } else true
         }
     }
 }
@@ -90,7 +90,7 @@ fun printInRubAndCoins(amountTransfer: Int, commission: Int) {
 
 }
 
-fun calculateCommission(amountTransferPerMonth: Int = 0, amountTransferCurrent: Int, cardType: Cards = VK_PAY): Int {
+fun calculateCommission(amountTransferPerMonth: Int, amountTransferCurrent: Int, cardType: Cards = VK_PAY): Int {
     return when (cardType) {
         VISA, MIR -> {
             val commission = (amountTransferCurrent * TRANSACTION_COMMISSION_VISA_MIR).toInt()
