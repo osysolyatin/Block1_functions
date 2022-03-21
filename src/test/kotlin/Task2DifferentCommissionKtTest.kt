@@ -208,7 +208,7 @@ class Task2DifferentCommissionKtTest {
         val result = calculateCommission (amountTransferPerMonthTest,amountTransferCurrentTest, cardType)
 
         // assert
-        assertEquals(1,result)
+        assertEquals(0,result)
     }
 
 }
