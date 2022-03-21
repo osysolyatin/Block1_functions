@@ -38,7 +38,7 @@ fun main() {
 }
 
 fun inputTransferAmount(): Int {
-    var input = 0
+    var input =0
     while (true) {
         try {
             print("Введите сумму перевода в рублях: ")
@@ -48,7 +48,7 @@ fun inputTransferAmount(): Int {
             println("Неверное число, попробуйте еще раз")
         }
     }
-    return input
+    return input.toInt()
 }
 
 fun convertRubToCoins(amountRUB: Int): Int {
