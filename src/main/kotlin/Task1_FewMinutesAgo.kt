@@ -9,14 +9,14 @@ fun main() {
     val agoTime = 7200
     println(agoToText(agoTime))
 }
-fun convertMinutesAndHoursIntoText(agoTime: Int, text: Array<String>): String {
-    val num100 = agoTime % 100
+fun plural(amount: Int, one: String, few: String, many: String): String {
+    val num100 = amount % 100
     val num10 = num100 % 10
-    return if (num100 in 5..20) text[2]
+    return if (num100 in 5..20) many
     else return when (num10) {
-        1 -> text[0]
-        in 2..4 -> text[1]
-        else -> text[2]
+        1 -> one
+        in 2..4 -> few
+        else -> many
     }
 }
 fun agoToText(agoTime: Int): String {
@@ -25,18 +25,18 @@ fun agoToText(agoTime: Int): String {
         in SECONDS_IN_MINUTE + 1..SECONDS_IN_HOUR -> {
             val agoTimeConvert = agoTime / SECONDS_IN_MINUTE
             return "был(а) в сети $agoTimeConvert ${
-                convertMinutesAndHoursIntoText(
+                plural(
                     agoTimeConvert,
-                    arrayOf("минуту", "минуты", "минут")
+                    "минуту", "минуты", "минут"
                 )
             } назад"
         }
         in SECONDS_IN_HOUR + 1..SECONDS_IN_DAY -> {
             val agoTimeConvert = agoTime / SECONDS_IN_HOUR
             return "был(а) в сети $agoTimeConvert ${
-                convertMinutesAndHoursIntoText(
+                plural(
                     agoTimeConvert,
-                    arrayOf("час", "часа", "часов")
+                    "час", "часа", "часов"
                 )
             } назад"
         }

@@ -5,13 +5,13 @@ import org.junit.Assert.*
 class Task1FewMinutesAgoKtTest {
 
     @Test
-    fun convertMinutesAndHoursIntoText_minutes_22() {
+    fun plural_22() {
         // arrange
         val agoTimeTest = 22
 
         //act
 
-        val result = convertMinutesAndHoursIntoText(agoTimeTest, arrayOf("минуту", "минуты", "минут"))
+        val result = plural(agoTimeTest, "минуту", "минуты", "минут")
 
         // assert
 
@@ -19,13 +19,13 @@ class Task1FewMinutesAgoKtTest {
     }
 
     @Test
-    fun convertMinutesAndHoursIntoText_minutes_5() {
+    fun plural_5() {
         // arrange
         val agoTimeTest = 5
 
         //act
 
-        val result = convertMinutesAndHoursIntoText(agoTimeTest, arrayOf("минуту", "минуты", "минут"))
+        val result = plural(agoTimeTest, "минуту", "минуты", "минут")
 
         // assert
 
@@ -33,13 +33,13 @@ class Task1FewMinutesAgoKtTest {
     }
 
     @Test
-    fun convertMinutesAndHoursIntoText_minutes_59() {
+    fun plural_59() {
         // arrange
         val agoTimeTest = 59
 
         //act
 
-        val result = convertMinutesAndHoursIntoText(agoTimeTest, arrayOf("минуту", "минуты", "минут"))
+        val result = plural(agoTimeTest, "минуту", "минуты", "минут")
 
         // assert
 
@@ -47,13 +47,13 @@ class Task1FewMinutesAgoKtTest {
     }
 
     @Test
-    fun convertMinutesAndHoursIntoText_minutes_21() {
+    fun plural_21() {
         // arrange
         val agoTimeTest = 21
 
         //act
 
-        val result = convertMinutesAndHoursIntoText(agoTimeTest, arrayOf("минуту", "минуты", "минут"))
+        val result = plural(agoTimeTest, "минуту", "минуты", "минут")
 
         // assert
 
